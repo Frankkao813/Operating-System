@@ -60,6 +60,7 @@
 
 #ifdef _USES_SCHEDULER_
 #include "scheduler.H"
+#include "fifo.H"           /*FIFO scheduler inherited from scheduler.H*/
 #endif
 
 /*--------------------------------------------------------------------------*/
@@ -178,8 +179,8 @@ void fun2() {
 void fun3() {
     Console::puts("Thread: "); Console::puti(Thread::CurrentThread()->ThreadId()); Console::puts("\n");
     Console::puts("FUN 3 INVOKED!\n");
-    //for(int j = 0; j < 20; j++) {
-    for(int j = 0;; j++) {
+    for(int j = 0; j < 20; j++) {
+    //for(int j = 0;; j++) {
         Console::puts("FUN 3 IN BURST["); Console::puti(j); Console::puts("]\n");
         for (int i = 0; i < 10; i++) {
 	    Console::puts("FUN 3: TICK ["); Console::puti(i); Console::puts("]\n");
@@ -191,8 +192,8 @@ void fun3() {
 void fun4() {
     Console::puts("Thread: "); Console::puti(Thread::CurrentThread()->ThreadId()); Console::puts("\n");
     Console::puts("FUN 4 INVOKED!\n");
-    //for(int j = 0; j < 20; j++) {
-    for(int j = 0;; j++) {
+    for(int j = 0; j < 20; j++) {
+    //for(int j = 0;; j++) {
         Console::puts("FUN 4 IN BURST["); Console::puti(j); Console::puts("]\n");
         for (int i = 0; i < 10; i++) {
 	    Console::puts("FUN 4: TICK ["); Console::puti(i); Console::puts("]\n");
@@ -259,7 +260,7 @@ int main() {
 
     /* -- SCHEDULER -- IF YOU HAVE ONE -- */
  
-    SYSTEM_SCHEDULER = new Scheduler();
+    SYSTEM_SCHEDULER = new FIFOScheduler();
 
 #endif
 

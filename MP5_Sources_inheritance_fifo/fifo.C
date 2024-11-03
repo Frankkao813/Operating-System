@@ -1,50 +1,10 @@
-/*
- File: scheduler.C
- 
- Author:
- Date  :
- 
- */
-
-/*--------------------------------------------------------------------------*/
-/* DEFINES */
-/*--------------------------------------------------------------------------*/
-
-/* -- (none) -- */
-
-/*--------------------------------------------------------------------------*/
-/* INCLUDES */
-/*--------------------------------------------------------------------------*/
-
-#include "scheduler.H"
+#include "fifo.H"
 #include "thread.H"
 #include "console.H"
 #include "utils.H"
 #include "assert.H"
 
-/*--------------------------------------------------------------------------*/
-/* DATA STRUCTURES */
-/*--------------------------------------------------------------------------*/
-
-/* -- (none) -- */
-
-/*--------------------------------------------------------------------------*/
-/* CONSTANTS */
-/*--------------------------------------------------------------------------*/
-
-/* -- (none) -- */
-
-/*--------------------------------------------------------------------------*/
-/* FORWARDS */
-/*--------------------------------------------------------------------------*/
-
-/* -- (none) -- */
-
-/*--------------------------------------------------------------------------*/
-/* METHODS FOR CLASS   S c h e d u l e r  */
-/*--------------------------------------------------------------------------*/
-
-Scheduler::Scheduler() {
+FIFOScheduler::FIFOScheduler() {
     front = 0;
     rear = 0;
     ready_count = 0;
@@ -52,7 +12,7 @@ Scheduler::Scheduler() {
 
 }
 
-void Scheduler::yield() {
+void FIFOScheduler::yield() {
     //if (count > 0) {
       // select the next thread, and check if the thread is valid
       Thread* next_thread = ready_queue[front];
@@ -67,7 +27,7 @@ void Scheduler::yield() {
             front = (front + 1) % MAX_THREADS; // Move front to the next position circularly
             ready_count--;
             Thread::dispatch_to(next_thread);
-            Console::puts("Scheduler yield is called. \n");
+            Console::puts("FIFOScheduler yield is called. \n");
       }
       else{
         Console::puts("No available thread in the system to dispatch \n");
@@ -76,7 +36,7 @@ void Scheduler::yield() {
     // cleaning the thread 
 }
 
-void Scheduler::resume(Thread * _thread) {
+void FIFOScheduler::resume(Thread * _thread) {
 
     if (ready_count < MAX_THREADS) {
         // add _thread at the ready queue
@@ -84,7 +44,7 @@ void Scheduler::resume(Thread * _thread) {
         // circularly compute the rear index
         rear = (rear + 1) % MAX_THREADS;
         ready_count++;
-        Console::puts("Scheduler resume is called. \n");
+        Console::puts("FIFOScheduler resume is called. \n");
     } else {
         // when the queue is full, output error message  (should not happen)
         Console::puts("Ready Queue is Full. \n");
@@ -93,18 +53,18 @@ void Scheduler::resume(Thread * _thread) {
 
 }
 
-void Scheduler::add(Thread * _thread) {
+void FIFOScheduler::add(Thread * _thread) {
   resume(_thread);
-  Console::puts("Scheduler add is called. \n");
+  Console::puts("FIFOScheduler add is called. \n");
 }
 
-void Scheduler::terminate(Thread* _thread) {
+void FIFOScheduler::terminate(Thread* _thread) {
     // push the thread to zombie queue
     zombie_queue[zombie_count++] = _thread;
-    Console::puts("Scheduler terminate is called.\n");
+    Console::puts("FIFOScheduler terminate is called.\n");
 }
 
-void Scheduler::terminate_ready_thread(Thread* _thread) {
+void FIFOScheduler::terminate_ready_thread(Thread* _thread) {
     // goal: remove the thread from the ready queue
     // First keep the temp_queue to store the thread that is valid
     Thread* temp_queue[MAX_THREADS];
@@ -129,7 +89,6 @@ void Scheduler::terminate_ready_thread(Thread* _thread) {
         ready_queue[i] = temp_queue[i];
     }
 
-    Console::puts("Scheduler terminate thread in ready queue is called.\n");
+    Console::puts("FIFOScheduler terminate thread in ready queue is called.\n");
 
 }
-

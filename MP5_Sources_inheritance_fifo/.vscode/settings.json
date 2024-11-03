@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "scheduler.C": "cpp",
+        "fifo.C": "cpp",
+        "kernel.C": "cpp"
+    }
+}
